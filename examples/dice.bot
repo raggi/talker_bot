@@ -3,7 +3,7 @@ class Dice
   def on_message(sender, content, event)
     return if sender['name'] == 'bot'
     case content
-    when /(\d+)[dD](\d+)(?:\+(\d+))/
+    when /(\d+)[dD](\d+)(?:\+(\d+))?/
       results = Array.new($1.to_i){ 1+rand($2.to_i) }
       total = results.inject { |t,v| t + v }
       total += $3.to_i if $3

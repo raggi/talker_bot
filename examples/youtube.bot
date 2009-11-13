@@ -13,8 +13,7 @@ class YouTube
     return if sender['name'] == 'bot'
     case content
     when /(.*) on youtube/
-      @toobes.search(:query => $1)
-      client.send_message "Hi #{sender['name']}!"
+      client.send_message @toobes.search(:query => $1).first.url
     end
   end
 end
