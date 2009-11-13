@@ -14,9 +14,7 @@ end
 
 require 'talker_bot'
 
-EM.run {
-  bot = TalkerBot.new :room => ARGV.first
-  bot.instance_eval(File.read(config), config, 0)
-  bot.connect
-  bot.run
-}
+bot = TalkerBot.new :room => ARGV.first
+bot.instance_eval(File.read(config), config, 0)
+trap('INT') { EM.stop if EM.reactor_running?; exit}
+EM.run { bot.run }
