@@ -7,4 +7,6 @@ include SingleForwardable
 
 def_delegators :@bot, *TalkerBot.instance_methods(false)
 
+config :room, ARGV.first
+
 at_exit { EM.run { @bot.run } }
