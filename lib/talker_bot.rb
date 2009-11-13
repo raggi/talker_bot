@@ -50,10 +50,4 @@ class TalkerBot
   def event(type, *args)
     @plugin_callbacks[type].each { |plugin| plugin.__send__(type, *args) }
   end
-
-  def run_filter_actions(list, *args)
-    list.each do |filter, action|
-      action.call(*args) if filter === event
-    end
-  end
 end

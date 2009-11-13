@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+require 'talker_bot/autorun'
+
+class Inspector
+  def respond_to?(name)
+    true if name.to_s =~ /^on_/
+  end
+
+  def method_missing(name, *args)
+    p [name, args]
+  end
+end
+
+# We can do inline configuration here...
+config :room, 40
+use Inspector.new
