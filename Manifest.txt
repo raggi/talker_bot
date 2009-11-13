@@ -1,0 +1,8 @@
+.autotest
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/talker_bot
+lib/talker_bot.rb
+test/test_talker_bot.rb

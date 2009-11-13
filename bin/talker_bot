@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+unless ARGV.first && File.exists?(ARGV[1])
+  abort <<-TEXT
+  Usage: talker_bot room [config.bot]
+    config.bot is a ruby file of the form:
+    
+    config :token, Talker::CLI.load_token # default
+    use Plugin.new
+  TEXT
+end
+
+config = ARGV[1] || 'config.bot'
+
+require 'talker_bot'
+
+bot = TalkerBot.new
+bot.instance_eval(File.read(config), config, 0)
+bot.connect
+bot.run
