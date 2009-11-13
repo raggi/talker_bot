@@ -1,0 +1,22 @@
+abort "bzzzt, known broken atm"
+
+require 'youtube'
+
+class YouTube
+  attr_accessor :client
+
+  def initialize
+    @toobes = YouTube::Client.new(File.read(ENV['HOME'] + '/.youtube').strip)
+  end
+
+  def on_message(sender, content, event)
+    return if sender['name'] == 'bot'
+    case content
+    when /(.*) on youtube/
+      @toobes.search(:query => $1)
+      client.send_message "Hi #{sender['name']}!"
+    end
+  end
+end
+
+use YouTube.new
