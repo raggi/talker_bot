@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require 'talker_bot/autorun'
+
+use TalkerBot::Bots::Dice.new
+use TalkerBot::Bots::Fortune.new
+use TalkerBot::Bots::Greeter.new
+use TalkerBot::Bots::Inspector.new

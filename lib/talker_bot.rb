@@ -1,11 +1,21 @@
 require 'talker'
 require 'talker/cli'
+require 'subload'
 
 class TalkerBot
   VERSION = '1.0.0'
   TALKER_OPTS = [:host, :port, :room, :token]
   TALKER_CALLBACKS = Talker.instance_methods.grep(/^on_/).map { |m| m.to_sym }
   UNDERSCORE = '_'
+  
+  module Bots
+    subload :Cat
+    subload :Youtube
+    subload :Greeter
+    subload :Fortune
+    subload :Dice
+    subload :Inspector
+  end
 
   def self.start(config = {}, &block)
     bot = new(config)

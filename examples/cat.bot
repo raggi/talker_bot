@@ -1,16 +1,3 @@
 #!/usr/bin/env ruby
 require 'talker_bot/autorun'
-
-class Cat
-  def client=(client)
-    Thread.new do
-      while true
-        client.send_message $stdin.readline.chomp
-      end
-    end
-  rescue EOFError
-    exit!
-  end
-end
-
-use Cat.new
+use TalkerBot::Bots::Cat.new

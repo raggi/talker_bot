@@ -1,14 +1,3 @@
 #!/usr/bin/env ruby
 require 'talker_bot/autorun'
-
-class Inspector
-  def respond_to?(name)
-    true if name.to_s =~ /^on_/
-  end
-
-  def method_missing(name, *args)
-    p [name, args]
-  end
-end
-
-use Inspector.new
+use TalkerBot::Bots::Inspector.new
