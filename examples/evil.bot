@@ -11,7 +11,8 @@ class Evil
     :flood => [:count, :delay, 
       "Flood the channel with :count messages with :delay second(s) delay between messages"],
     :recurse => [:really,
-      "Do a recursive flood on the channel. This gets out of hand really quick. Set :really as a confirmation"]
+      "Do a recursive flood on the channel. This gets out of hand really quick. Set :really as a confirmation"],
+    :stop_flood => "End a currently running flood test"
   }
 
   def on_message(sender, content, event)
@@ -66,7 +67,31 @@ END
 END
   end
 
-  def do_flood(times, delay)
+  def flood(times, delay)
+    times = times.to_f
+    delay = delay.to_f
+    @count = 0
+
+    @timer = EM::PeriodicTimer.new(delay) { 
+      if @count < times
+        @count += 1
+        client.send_message "FLOOD: Message # #{@count}"
+      else
+        timer.cancel
+      end
+    }
+    "Starting flood of #{times} messages, one every #{delay} seconds"
+  end
+
+  def stop_flood
+    @timer.cancel if @timer
+    @timer = nil
+
+    "Flood stopped"
+  end
+
+  def rescurse(really = false)
+    return "You don't really want to do this." unless really
   end
 
 end
