@@ -7,7 +7,7 @@ class TalkerBot
   TALKER_OPTS = [:host, :port, :room, :token]
   TALKER_CALLBACKS = Talker.instance_methods.grep(/^on_/).map { |m| m.to_sym }
   UNDERSCORE = '_'
-  
+
   module Bots
     subload :Cat
     subload :Youtube
@@ -47,12 +47,19 @@ class TalkerBot
   end
   alias use plugin
 
+  def current_user
+    @connection.current_user
+  end
+
   def connect
-    Talker.connect(@config) do |client|
+    @connection = Talker.connect(@config) do |client|
       TALKER_CALLBACKS.each do |cb|
         client.__send__(cb) { |*args| event(cb, *args) }
       end
-      @plugins.each { |p| p.client = client if p.respond_to?(:client=)}
+      @plugins.each do |p|
+        p.bot = client if p.respond_to?(:bot=)
+        p.client = client if p.respond_to?(:client=)
+      end
     end
   end
   alias run connect
