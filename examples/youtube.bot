@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+require 'talker_bot/autorun'
+
 abort "bzzzt, known broken atm"
 
 require 'youtube'

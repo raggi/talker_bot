@@ -11,6 +11,4 @@ class Inspector
   end
 end
 
-# We can do inline configuration here...
-config :room, 40
 use Inspector.new
