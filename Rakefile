@@ -1,12 +1,13 @@
+#!/usr/bin/env rake
 # -*- ruby -*-
 
-require 'rubygems'
 require 'hoe'
 
-Hoe.spec 'talker_bot' do
-  # developer('FIX', 'FIX@example.com')
+Hoe.plugin :doofus, :git, :gemcutter
 
-  # self.rubyforge_name = 'talker_botx' # if different than 'talker_bot'
+Hoe.spec 'talker_bot' do
+  developer('James Tucker', 'jftucker@gmail.com')
+  self.rubyforge_name = 'libraggi'
 end
 
 # vim: syntax=ruby
