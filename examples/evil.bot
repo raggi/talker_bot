@@ -8,19 +8,19 @@ class Evil
 
   COMMANDS = {
     :help => 
-      lambda { |client| client.help_message },
+      lambda { help_message },
 
     :commands => 
-      lambda { |client| client.commands_help },
+      lambda { commands_help },
 
     :die => 
-      lambda { |client| client.die },
+      lambda { die },
 
     :flood => 
-      lambda { |client, times, delay| client.do_flood(times, delay) },
+      lambda { |times, delay| do_flood(times, delay) },
 
     :recurse => 
-      lambda { |client, really| client.do_recursive_flood(really) }
+      lambda { |really| do_recursive_flood(really) }
   }
 
   def on_message(sender, content, event)
@@ -38,7 +38,7 @@ class Evil
 
       if command
         puts "Found command for: #{input[0]}"
-        message = command.call(self)
+        message = instance_eval(&command)
       else
         message = "I'm sorry #{sender['name']}, but I'm afraid I can't do that."
       end
