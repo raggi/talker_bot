@@ -16,5 +16,5 @@ require 'talker_bot'
 
 bot = TalkerBot.new :room => ARGV.first
 bot.instance_eval(File.read(config), config, 0)
-trap(:INT) { EM.stop if EM.reactor_running?; exit }
+trap('INT') { EM.stop if EM.reactor_running?; exit}
 EM.run { bot.run }
