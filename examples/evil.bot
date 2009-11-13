@@ -1,0 +1,68 @@
+class Evil
+  attr_accessor :client
+
+  def initialize(*args)
+    puts "Initializing!"
+    super
+  end
+
+  COMMANDS = {
+    :help => 
+      lambda { |client| client.help_message },
+
+    :commands => 
+      lambda { |client| client.commands_help },
+
+    :die => 
+      lambda { |client| client.die },
+
+    :flood => 
+      lambda { |client, times, delay| client.do_flood(times, delay) },
+
+    :recurse => 
+      lambda { |client, really| client.do_recursive_flood(really) }
+  }
+
+  def on_message(sender, content, event)
+    puts  event.inspect
+    case content
+    when /^evil: (.*)/
+      puts "Someone talking to me?! #{sender['name']}: #{content.inspect}"
+      puts sender.inspect
+      puts event.inspect
+
+      input = $1.split(" ")
+      message = nil
+
+      command = COMMANDS[input[0].to_sym]
+
+      if command
+        puts "Found command for: #{input[0]}"
+        message = command.call(self)
+      else
+        message = "I'm sorry #{sender['name']}, but I'm afraid I can't do that."
+      end
+
+      client.send_message message if message
+    end
+  end
+
+  def help_message
+<<END
+  This is Evil Bot. I'm here to cause pain and destruction.
+  To see a list of commands, ask me for 'commands' 
+END
+  end
+
+  def commands_help
+<<END
+  The commands I currently support are:
+  #{COMMANDS.map { |key, value| key }.join(", ")}
+END
+  end
+
+end
+
+trap('INT') { EM.shutdown }
+
+use Evil.new
