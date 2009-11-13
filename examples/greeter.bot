@@ -1,0 +1,11 @@
+class Greeter
+  attr_accessor :client
+
+  def on_join(*users)
+    users.each do |user|
+      client.send_message "Welcome #{user['name']}, nice to see you!"
+    end
+  end
+end
+
+use Greeter.new
