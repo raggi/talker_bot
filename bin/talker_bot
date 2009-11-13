@@ -14,7 +14,9 @@ end
 
 require 'talker_bot'
 
-bot = TalkerBot.new :room => ARGV.first
-bot.instance_eval(File.read(config), config, 0)
-bot.connect
-bot.run
+EM.run {
+  bot = TalkerBot.new :room => ARGV.first
+  bot.instance_eval(File.read(config), config, 0)
+  bot.connect
+  bot.run
+}
