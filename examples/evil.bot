@@ -4,44 +4,33 @@ require 'talker_bot/autorun'
 class Evil
   attr_accessor :client
 
-  def initialize(*args)
-    puts "Initializing!"
-    super
-  end
-
   COMMANDS = {
-    :help => 
-      lambda { help_message },
-
-    :commands => 
-      lambda { commands_help },
-
-    :die => 
-      lambda { die },
-
-    :flood => 
-      lambda { |times, delay| do_flood(times, delay) },
-
-    :recurse => 
-      lambda { |really| do_recursive_flood(really) }
+    :help => "Print out this help message",
+    :commands => "List all available commands",
+    :die => "Kill the evil bot",
+    :flood => [:count, :delay, 
+      "Flood the channel with :count messages with :delay second(s) delay between messages"],
+    :recurse => [:really,
+      "Do a recursive flood on the channel. This gets out of hand really quick. Set :really as a confirmation"]
   }
 
   def on_message(sender, content, event)
     puts  event.inspect
     case content
     when /^evil: (.*)/
-      puts "Someone talking to me?! #{sender['name']}: #{content.inspect}"
-      puts sender.inspect
-      puts event.inspect
+      puts "Message: #{event.inspect}"
 
       input = $1.split(" ")
       message = nil
 
-      command = COMMANDS[input[0].to_sym]
-
-      if command
+      if COMMANDS.has_key?(input[0].to_sym)
         puts "Found command for: #{input[0]}"
-        message = instance_eval(&command)
+        begin
+          message = self.__send__(*input)
+        rescue Exception => ex
+          puts "Error: #{ex.message}"
+          message = "Nice try, you can't kill me that easily!"
+        end
       else
         message = "I'm sorry #{sender['name']}, but I'm afraid I can't do that."
       end
@@ -50,22 +39,37 @@ class Evil
     end
   end
 
-  def help_message
+  def help
 <<END
   This is Evil Bot. I'm here to cause pain and destruction.
   To see a list of commands, ask me for 'commands' 
 END
   end
 
-  def commands_help
-<<END
+  def commands
+    command_list = []
+    COMMANDS.each do |key, info|
+      args = []
+      desc = info
+
+      if info.is_a?(Array)
+        args = info[0..-2]
+        desc = info[-1]
+      end
+
+      command_list << "\t#{key} #{args.join(" ")}: #{desc}"
+    end
+
+    return <<-END
   The commands I currently support are:
-  #{COMMANDS.map { |key, value| key }.join(", ")}
+  #{command_list.join("\n")}
 END
+  end
+
+  def do_flood(times, delay)
   end
 
 end
 
-trap('INT') { EM.shutdown }
-
+config :room, 40
 use Evil.new
