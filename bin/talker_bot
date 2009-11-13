@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-unless ARGV.first && File.exists?(ARGV[1])
+config = ARGV[1] || 'config.bot'
+
+unless ARGV.first && File.exists?(config)
   abort <<-TEXT
   Usage: talker_bot room [config.bot]
     config.bot is a ruby file of the form:
@@ -10,11 +12,9 @@ unless ARGV.first && File.exists?(ARGV[1])
   TEXT
 end
 
-config = ARGV[1] || 'config.bot'
-
 require 'talker_bot'
 
-bot = TalkerBot.new
+bot = TalkerBot.new :room => ARGV.first
 bot.instance_eval(File.read(config), config, 0)
 bot.connect
 bot.run
