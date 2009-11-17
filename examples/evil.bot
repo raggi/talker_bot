@@ -2,7 +2,7 @@
 require 'talker_bot/autorun'
 
 class Evil
-  attr_accessor :client
+  attr_accessor :client, :recursing
 
   COMMANDS = {
     :help => "Print out this help message",
@@ -12,11 +12,17 @@ class Evil
       "Flood the channel with :count messages with :delay second(s) delay between messages"],
     :recurse => [:really,
       "Do a recursive flood on the channel. This gets out of hand really quick. Set :really as a confirmation"],
+    :stop_recurse => "Attempt to halt the recurse flood",
     :stop_flood => "End a currently running flood test"
   }
 
   def on_message(sender, content, event)
     puts  event.inspect
+
+    if self.recursing
+      client.send_message content
+    end
+
     case content
     when /^evil: (.*)/
       puts "Message: #{event.inspect}"
@@ -77,7 +83,7 @@ END
         @count += 1
         client.send_message "FLOOD: Message # #{@count}"
       else
-        timer.cancel
+        @timer.cancel
       end
     }
     "Starting flood of #{times} messages, one every #{delay} seconds"
@@ -90,8 +96,17 @@ END
     "Flood stopped"
   end
 
-  def rescurse(really = false)
+  def recurse(really = false)
     return "You don't really want to do this." unless really
+    @recursing = true
+    
+    "Starting recurse, you asked for it"
+  end
+
+  def stop_recurse
+    @recursing = false
+
+    "Recurse finished, good day"
   end
 
 end
