@@ -13,8 +13,18 @@ class Evil
     :recurse => [:really,
       "Do a recursive flood on the channel. This gets out of hand really quick. Set :really as a confirmation"],
     :stop_recurse => "Attempt to halt the recurse flood",
-    :stop_flood => "End a currently running flood test"
+    :stop_flood => "End a currently running flood test",
+    :boogie => "Do the boogie, duh"
   }
+
+  DANCE_STEPS = [
+    ":D|-<",
+    ":D\\-<",
+    ":D/-<",
+    ":D>-<",
+    ":D<-<",
+    ":D|-|",
+  ]
 
   def on_message(sender, content, event)
     puts  event.inspect
@@ -44,6 +54,10 @@ class Evil
 
       client.send_message message if message
     end
+  end
+
+  def die
+    EM.stop
   end
 
   def help
@@ -107,6 +121,16 @@ END
     @recursing = false
 
     "Recurse finished, good day"
+  end
+
+  def boogie
+    @step_count = 0
+    @timer = EM::PeriodicTimer.new(1) do
+      client.send_message DANCE_STEPS[@step_count]
+      @step_count = (@step_count + 1) % DANCE_STEPS.length
+    end
+
+    "DANCE! Once you start, YOU CAN'T STOP!"
   end
 
 end
