@@ -47,10 +47,6 @@ class TalkerBot
   end
   alias use plugin
 
-  def current_user
-    @connection.current_user
-  end
-
   def connect
     @connection = Talker.connect(@config) do |client|
       TALKER_CALLBACKS.each do |cb|
